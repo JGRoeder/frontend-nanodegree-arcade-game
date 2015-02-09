@@ -1283,21 +1283,3 @@ document.addEventListener('keyup', function(e) {
 
   game.player.handleInput(allowedKeys[e.keyCode]);
 });
-
-// //console.log(Resources.get('sounds/traffic.mp3'));
-// var ambient = function () {
-//   myAudio = new Audio('sounds/traffic.mp3');
-//   if (typeof myAudio.loop == 'boolean')
-//   {
-//       myAudio.loop = true;
-//   }
-//   else
-//   {
-//       myAudio.addEventListener('ended', function() {
-//           this.currentTime = 0;
-//           this.play();
-//       }, false);
-//   }
-//   myAudio.volume = 0.03;
-//   myAudio.play();
-// };
