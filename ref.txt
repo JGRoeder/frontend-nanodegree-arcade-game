@@ -1,0 +1,34 @@
+jshint package for atom because I'm messy.
+
+gulp & node to prepare gh builds.
+
+A very small portion of the reference used in this project:
+
+Standard Debounce
+http://snippetrepo.com/snippets/basic-vanilla-javascript-throttlingdebounce
+
+Spatial Hash for Collision detection
+http://www.gamedev.net/page/resources/_/technical/game-programming/spatial-hashing-r2697
+https://conkerjo.wordpress.com/2009/06/13/spatial-hashing-implementation-for-fast-2d-collisions/
+http://entitycrisis.blogspot.com/2011/07/spatial-hash-in-javascript-for-2d.html
+
+https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection
+
+I also looked into quadtree, but failed to save any references to articles.
+
+Alternatives to Switch/Case
+
+http://encosia.com/first-class-functions-as-an-alternative-to-javascripts-switch-statement/
+http://james.padolsey.com/javascript/how-to-avoid-switch-case-syndrome/
+
+A ton of little things along the way. 
+
+
+Sound Effects sourced from freesound.org
+
+bell.mp3      - https://www.freesound.org/people/domrodrig/sounds/116779/
+boo.mp3       - https://www.freesound.org/people/unchaz/sounds/150959/
+crash.mp3     - https://www.freesound.org/people/squareal/sounds/237375/
+hit.mp3       - https://www.freesound.org/people/Under7dude/sounds/163441/
+traffic.mp3   - https://www.freesound.org/people/klankbeeld/sounds/180156/
+trombone.mp3  - https://www.freesound.org/people/kirbydx/sounds/175409/
