@@ -47,7 +47,6 @@
               */
             var myAudio = new Audio();
             myAudio.oncanplaythrough = function() {
-              console.log(audioCache[url]);
               audioCache[url] = myAudio;
 
               // Shutting up callbacks for now

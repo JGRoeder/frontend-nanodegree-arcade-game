@@ -1,0 +1,26 @@
+{
+  "name": "frontend-nanodegree-arcade-game",
+  "version": "1.0.0",
+  "description": "Project for UDacity Frontend Nanodegree Program",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JGRoeder/frontend-nanodegree-arcade-game.git"
+  },
+  "author": "J.G.Roeder",
+  "license": "NONE",
+  "bugs": {
+    "url": "https://github.com/JGRoeder/frontend-nanodegree-arcade-game/issues"
+  },
+  "homepage": "https://github.com/JGRoeder/frontend-nanodegree-arcade-game",
+  "devDependencies": {
+    "gulp": "^3.8.10",
+    "gulp-cssmin": "^0.1.6",
+    "gulp-imagemin": "^2.1.0",
+    "gulp-minify-html": "^0.1.8",
+    "gulp-uglify": "^1.1.0"
+  }
+}
