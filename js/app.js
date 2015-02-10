@@ -970,7 +970,7 @@ Van.prototype.update = function(dt, bounds) {
 */
 var Semi = function ( x, y, speed ){
   Enemy.call(this, x, y, speed);
-  this.sprite = 'images/semi.png';
+  this.sprite = this.randomColor('semi');
   this.speed = speed * this.step.x;
   this.width = 238;
   this.hitOffset.x = 5;
@@ -993,15 +993,32 @@ Semi.prototype.update = function(dt, bounds) {
   }
 };
 
+/**
+* Randomly choose a differently color sprite
+* @param {string} - the base name for the associated sprite e.g. 'semi'
+* @returns {string} - A string referencing a one of the semi sprites
+*/
+Semi.prototype.randomColor = function (baseName) {
+  var pick = Math.floor((Math.random() * 3) + 1);
+  var output = 'images/' + baseName + pick.toString() + '.png'
+  return output;
+};
 
+
+/**
+* A reverse semi type enemy
+* @constructor
+* @extends Semi
+* @param {number} x - starting x position in grid units
+* @param {number} y - starting y position in grid units
+* @param {number} speed - speed in grid units
+*/
 var SemiReverse = function ( x, y, speed ){
-  Enemy.call(this, x, y, speed);
-  this.sprite = 'images/semi-reverse.png';
-  this.speed = speed * this.step.x;
-  this.width = 238;
+  Semi.call(this, x, y, speed);
+  this.sprite = this.randomColor('semi-reverse');
   this.hitOffset.x = 58;
 };
-SemiReverse.prototype = Object.create(Enemy.prototype);
+SemiReverse.prototype = Object.create(Semi.prototype);
 SemiReverse.prototype.constructor = SemiReverse;
 
 /**
