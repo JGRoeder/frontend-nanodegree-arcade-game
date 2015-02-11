@@ -99,7 +99,6 @@ var Engine = (function(global) {
       {repeat: 1, tiles: [5]}
     ];
     agame = new Game(canvas.width, canvas.height, 11, 13, mapTiles);
-    //game.state.makeStartButton();
     main();
   }
 

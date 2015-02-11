@@ -221,39 +221,62 @@ var GameState = function (tileSet) {
   this.coffeeCount = 2;
   this.speedMultiplier = 1;
   this.currentScore = 0;
-  //this.restartButton = this.makeResetButton(tileSet);
   this.buttonState = 0;
   this.resetScreenTimer();
   this.resetCoffeeTimer();
   this.watchFocus();
 };
 
-var firstCheck = false,
-    secondCheck = false,
-    access = firstCheck ? "Access denied" : secondCheck ? "Access denied" : "Access granted";
 
-console.log( access ); // logs "Access granted"
-
+/**
+ * Pauses the game
+ * if audio exists pauses it, and removes any active buttons
+ * additionally stores the game state for use during unpause
+ */
 GameState.prototype.pause = function () {
-  var lastMode = game.state.currentMode;
-  //game.state.currentMode = game.state.currentMode === 'pause' ? this.lastState : ('pause');
-  if (game.state.currentMode === 'pause') {
+  this.lastState = game.state.currentMode;
+  if(game.audio) game.audio.pause();
+  if(game.state.button) game.state.removeButton(game.state.button);
+  game.state.currentMode = 'pause';
+};
+
+
+
+/**
+ * Unpauses the game returning it to the last known state
+ * if audio exists, resumes it
+ */
+GameState.prototype.unPause = function () {
+  if ( game.state.currentMode === 'pause') {
     if(game.audio) game.audio.play();
     game.state.currentMode =  this.lastState;
-  } else {
-    if(game.audio) game.audio.pause();
-    if(game.state.button) game.state.removeButton(game.state.button);
-    game.state.currentMode = 'pause';
+    game.allEnemies = game.createEnemies(); // prevents enemy stacking ( although a bit jumpy )
   }
-  this.lastState = lastMode;
 };
+
+
+
+// GameState.prototype.pause = function () {
+//   console.log('fired');
+//   var lastMode = game.state.currentMode;
+//   //game.state.currentMode = game.state.currentMode === 'pause' ? this.lastState : ('pause');
+//   if (game.state.currentMode === 'pause') {
+//     if(game.audio) game.audio.play();
+//     game.state.currentMode =  this.lastState;
+//   } else if (game.state.currentMode !== 'pause') {
+//     if(game.audio) game.audio.pause();
+//     if(game.state.button) game.state.removeButton(game.state.button);
+//     game.state.currentMode = 'pause';
+//   }
+//   this.lastState = lastMode;
+// };
 
 GameState.prototype.watchFocus = function () {
   if (/*@cc_on!@*/false) { // check for Internet Explorer
-    document.onfocusin = this.pause;
+    document.onfocusin = this.unPause;
     document.onfocusout = this.pause;
   } else {
-    window.onfocus = this.pause;
+    window.onfocus = this.unPause;
     window.onblur = this.pause;
   }
 };
@@ -974,7 +997,7 @@ Sedan.prototype.update = function(dt, bounds) {
 */
 var Coupe = function ( x, y, speed ){
   Enemy.call(this, x, y, speed);
-  this.sprite = 'images/coupe.png';
+  this.sprite = 'images/sedan.png'; //temporary ( changing sprites)
   this.speed = speed * this.step.x;
   this.width = 126;
 };
