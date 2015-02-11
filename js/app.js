@@ -184,20 +184,20 @@ Game.prototype.createEnemies = function () {
 
 
 Game.prototype.loopAudio = function(url) {
-  var Audio = AudioResources.get(url);
-  if (typeof Audio.loop == 'boolean')
+  this.audio = AudioResources.get(url);
+  if (typeof this.audio.loop == 'boolean')
     {
-        Audio.loop = true;
+      this.audio.loop = true;
     }
     else
     {
-        Audio.addEventListener('ended', function() {
+      this.audio.addEventListener('ended', function() {
             this.currentTime = 1;
             this.play();
         }, false);
     }
-    Audio.volume = 0.03;
-    Audio.play();
+    this.audio.volume = 0.03;
+    this.audio.play();
 };
 
 Game.prototype.playAudio = function(url) {
@@ -216,14 +216,46 @@ Game.prototype.playAudio = function(url) {
 var GameState = function (tileSet) {
   this.currentMode = 'new';
   this.level = 1;
+  this.tileSet = tileSet;
   this.player = game.player;
   this.coffeeCount = 2;
   this.speedMultiplier = 1;
   this.currentScore = 0;
-  this.restartButton = this.makeResetButton(tileSet);
+  //this.restartButton = this.makeResetButton(tileSet);
   this.buttonState = 0;
   this.resetScreenTimer();
   this.resetCoffeeTimer();
+  this.watchFocus();
+};
+
+var firstCheck = false,
+    secondCheck = false,
+    access = firstCheck ? "Access denied" : secondCheck ? "Access denied" : "Access granted";
+
+console.log( access ); // logs "Access granted"
+
+GameState.prototype.pause = function () {
+  var lastMode = game.state.currentMode;
+  //game.state.currentMode = game.state.currentMode === 'pause' ? this.lastState : ('pause');
+  if (game.state.currentMode === 'pause') {
+    if(game.audio) game.audio.play();
+    game.state.currentMode =  this.lastState;
+  } else {
+    if(game.audio) game.audio.pause();
+    if(game.state.button) game.state.removeButton(game.state.button);
+    game.state.currentMode = 'pause';
+  }
+  this.lastState = lastMode;
+};
+
+GameState.prototype.watchFocus = function () {
+  if (/*@cc_on!@*/false) { // check for Internet Explorer
+    document.onfocusin = this.pause;
+    document.onfocusout = this.pause;
+  } else {
+    window.onfocus = this.pause;
+    window.onblur = this.pause;
+  }
 };
 
 /**
@@ -275,9 +307,10 @@ GameState.prototype.renderLives = function () {
  */
 GameState.prototype.getScreen = function (mode) {
   var screens = {
-    'new': 'startScreen',
-    'over': 'overScreen',
-    'day':  'dayScreen'
+    'new':    'startScreen',
+    'over':   'overScreen',
+    'day':    'dayScreen',
+    'pause':  'pauseScreen'
   };
   return screens[mode];
 };
@@ -328,6 +361,7 @@ GameState.prototype.showButton = function(buttonClass, buttonID){
  */
 GameState.prototype.removeButton = function (button) {
   button.parentNode.removeChild(button);
+  this.button = false;
 };
 
 /**
@@ -337,10 +371,10 @@ GameState.prototype.removeButton = function (button) {
  * @returns {object} an button object
  */
 GameState.prototype.makeStartButton = function() {
-  var button = document.createElement('div');
-  button.innerHTML = 'Start';
-  button.id = 'start';
-  button.className ='btn';
+  this.button = document.createElement('div');
+  this.button.innerHTML = 'Start';
+  this.button.id = 'start';
+  this.button.className ='btn';
 
   // retrieve canvas element by ID
   // map bounds to its bounding values
@@ -348,15 +382,15 @@ GameState.prototype.makeStartButton = function() {
   // TODO probably it's own method
   var canvas = document.getElementById('canvas');
   var bounds = canvas.getBoundingClientRect();
-  button.style.top = (bounds.top + ((bounds.height - 40) / 1.75)) + 'px';
+  this.button.style.left = (bounds.left + ((bounds.width - 150) / 2)) + 'px';
+  this.button.style.top = (bounds.top + ((bounds.height - 40) / 1.75)) + 'px';
 
-  document.body.insertBefore(button, document.body.firstChild);
-  button.addEventListener("click", function(){
+  document.body.insertBefore(this.button, document.body.firstChild);
+  this.button.addEventListener("click", function(){
     game.state.setMode('day');
-    game.state.removeButton(button);
+    game.state.removeButton(this);
     game.loopAudio('sounds/traffic.mp3');
   });
-  return button;
 };
 
 
@@ -369,10 +403,10 @@ GameState.prototype.makeStartButton = function() {
  * TODO probably split this into a couple methods || largely redundant with above
  */
 GameState.prototype.makeResetButton = function(tileSet) {
-  var button = document.createElement('div');
-  button.innerHTML = 'retry';
-  button.id = 'restart';
-  button.className='btn hidden';
+  this.button = document.createElement('div');
+  this.button.innerHTML = 'retry';
+  this.button.id = 'restart';
+  this.button.className='btn';
 
   // retrieve canvas element by ID
   // map bounds to its bounding values
@@ -380,15 +414,16 @@ GameState.prototype.makeResetButton = function(tileSet) {
   // TODO probably it's own method
   var canvas = document.getElementById('canvas');
   var bounds = canvas.getBoundingClientRect();
-  button.style.top = (bounds.top + ((bounds.height - 40) / 1.75)) + 'px';
+  this.button.style.left = (bounds.left + ((bounds.width - 150) / 2)) + 'px';
+  this.button.style.top = (bounds.top + ((bounds.height - 40) / 1.75)) + 'px';
 
-  document.body.insertBefore(button, document.body.firstChild);
-  button.addEventListener("click", function(){
+  document.body.insertBefore(this.button, document.body.firstChild);
+  this.button.addEventListener("click", function(){
     game.reset(tileSet); // pass in tileset because we're resetting
     game.state.setMode('day');
-    game.state.removeButton(button);
+    game.state.removeButton(this);
   });
-  return button;
+
 };
 
 /**
@@ -403,8 +438,9 @@ GameState.prototype.makeResetButton = function(tileSet) {
  * makes the button visible if it is current hidden
  */
 GameState.prototype.overScreen = function () {
-  if (this.buttonState === 0 ){
-    this.showButton('btn', 'restart');
+  console.log(!this.button);
+  if (!this.button) {
+    this.makeResetButton(this.tileSet);
   }
   ctx.fillStyle = 'rgba(0,0,0,0.5)';
   ctx.fillRect(0,0,1111,1500);
@@ -417,6 +453,7 @@ GameState.prototype.overScreen = function () {
   ctx.fillText('YOU LASTED ' + ( this.level - 1 ) + ' DAYS',  555.5, 875);
   ctx.fillText('YOU SCORED ' + this.currentScore + ' POINTS',  555.5, 950);
 };
+
 
 
 /**
@@ -445,6 +482,9 @@ GameState.prototype.dayScreen = function () {
  * Draws the title screen.
  */
 GameState.prototype.startScreen = function () {
+  if (!this.button) {
+    this.makeStartButton();
+  }
   ctx.fillStyle = 'rgba(0,0,0,0.7)';
   ctx.fillRect(0,0,1111,1500);
   ctx.textAlign = 'center';
@@ -456,8 +496,22 @@ GameState.prototype.startScreen = function () {
   ctx.fillText('Each day more of your co-workers will realize there is a new intern.',  555.5, 875);
   ctx.fillText('Use the arrow keys to walk across the street, grab a coffee, and then',  555.5, 875 + 31);
   ctx.fillText('bring it back before its cold.',  555.5, 875 + 31 + 31);
-
 };
+
+/**
+ * Draws pause screen
+ */
+GameState.prototype.pauseScreen = function () {
+  ctx.fillStyle = 'rgba(0,0,0,0.7)';
+  ctx.fillRect(0,0,1111,1500);
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#fff';
+  ctx.fillText('COMPOSE YOURSELF',  555.5, 500);
+  ctx.font = 'Bold 120px Arial Black';
+  ctx.fillText('GAME PAUSED',  555.5, 650);
+  ctx.font = 'Normal 24px Arial';
+};
+
 
 /**
  * Draws the HUD at the top of the canvas

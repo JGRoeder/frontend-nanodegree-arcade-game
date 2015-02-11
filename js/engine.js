@@ -50,7 +50,6 @@ var Engine = (function(global) {
     * our update function since it may be used for smooth animation.
     */
 
-
     if (agame.state.currentMode == 'play') {
       update(dt);
       render();
@@ -80,11 +79,6 @@ var Engine = (function(global) {
     buttonPosition();
     reset();
     lastTime = Date.now();
-    //console.log(AudioResources.get('sounds/trombone.mp3'));
-    //var doit = AudioResources.get('sounds/trombone.mp3');
-    //doit.play();
-
-
 
     // Our Map Object see GameMap.prototype.getTile for codes.
     // repeat 1 repeats the same tile until space is filled
@@ -105,7 +99,7 @@ var Engine = (function(global) {
       {repeat: 1, tiles: [5]}
     ];
     agame = new Game(canvas.width, canvas.height, 11, 13, mapTiles);
-    game.state.makeStartButton();
+    //game.state.makeStartButton();
     main();
   }
 
@@ -269,8 +263,6 @@ var Engine = (function(global) {
     'images/life-indicator.png'
     ]);
     Resources.onReady(init);
-
-
 
     /* Assign the canvas' context object to the global variable (the window
     * object when run in a browser) so that developer's can use it more easily
