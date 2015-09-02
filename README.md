@@ -3,7 +3,7 @@ P3 - Arcade Clone
 
 Submission for Project 3 ( Arcade Clone ) of Udacity's Front-End Web Developer Nanodegree. My interpretation "Internship" requires that the player crosses a busy street to retrieve coffee for his co-workers, taking care to return before its cold.
 
-[Try The Game]('http://jgroeder.github.io/frontend-nanodegree-arcade-game/')
+[Try The Game](http://jgroeder.github.io/frontend-nanodegree-arcade-game/)
 
 *Note: You may need to adjust your volume.*
 
